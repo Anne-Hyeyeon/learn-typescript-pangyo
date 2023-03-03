@@ -184,3 +184,119 @@ console.log(hyeyeonkim); // 클래스로 만들어진 객체가 뿅!
 3. 타입스크립트의 클래스 문법
 
 - 타입스크립트에서 클래스 문법을 사용하기 위해서는, 클래스 최 상단에 멤버 변수의 타입을 지정해야 한다.
+
+# 제네릭
+
+### 아래 함수의 문제점은 뭘까...? 분명히 같은 기능을 하고 있는데 왜 두 개나 있지?
+
+```js
+function logText(text: string) {
+  console.log(text);
+  return text;
+}
+
+function logNumber(num: number) {
+  console.log(num);
+  return num;
+}
+
+logText("a");
+logNumber(10);
+```
+
+### 대안 : input에 대한 해결은 됐지만, 반환값이 해결되지 않음.
+
+```js
+function logText(text: string | number) {
+  console.log(text);
+  return text;
+}
+
+const a = logText("a"); // 이 경우 a의 타입은 string | number 타입
+a.split(""); // 오류 : number가 들어오는 경우 split이 제공되지 않음.
+```
+
+### 제네릭 타입 활용
+
+```js
+function logText<T>(text: T): T {
+  console.log(text);
+  return text;
+}
+
+const str = logText<string>() // 이 경우 text는 string이 된다.
+str.split(''); // 오류 없음.
+
+const login = logText<boolean>(true); // login은 boolean이 된다.
+
+// logText("a");
+// logText(10);
+```
+
+### 인터페이스에 제네릭 선언
+
+```js
+interface DropdownExample {
+  value: string; // value 값은 언제든 바뀔 수 있음.
+  selected: boolean;
+}
+
+const object: DropdownExample = {
+  value: "abc",
+  selected: false,
+};
+
+interface Dropdown<T> {
+  value: T;
+  selected: boolean;
+}
+
+const example: Dropdown<string> = {
+  value: "ab",
+  selected: false,
+};
+```
+
+### 제네릭의 타입 제한
+
+```js
+// T[] : 제네릭 타입이 무엇인지 타입스크립트에게 일종의 힌트를 주는 것. (제네릭의 타입 제한??)
+
+function logTextLength<T>(text: T[]): T[] {
+  console.log(text.length);
+  text.forEach((text) => console.log(text));
+  return text;
+}
+```
+
+### 제네릭 타입 제한 2 - 정의된 타입 이용하기
+
+```js
+interface LengthType {
+    length: number;
+}
+
+function logTextLength<T extends LengthType>(text: T):T {
+    text.length;
+    return text;
+}
+
+logTextLength('abac');
+
+```
+
+### 제네릭 타입 제한 3 - keyof (예약어)를 이용해서
+
+```js
+interface ShoppingItem {
+    name: string;
+    price: number;
+    stock: number;
+}
+
+function getShoppingItemOption<T extends keyof ShoppingItem>(itemOption: T):T {
+    return itemOption;
+}
+```
+
+- ShoppingItem에 있는 타입 중 한 가지를 T의 타입으로 정한다. 라는 뜻!
