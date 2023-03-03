@@ -302,3 +302,37 @@ function getShoppingItemOption<T extends keyof ShoppingItem>(itemOption: T):T {
 ```
 
 - ShoppingItem에 있는 타입 중 한 가지를 T의 타입으로 정한다. 라는 뜻!
+
+# 두 번째 프로젝트 - 전화번호부 애플리케이션
+
+1. 애플리케이션에 정의된 타입 설명 및 API 함수 타입 정의 힌트
+
+```js
+function fetchItems(): string[] {
+  var items = ["a", "b", "c"];
+  return items;
+}
+
+let result = fetchItems();
+console.log(result); //  string이 나온다!
+```
+
+- 리턴 타입을 주지 않더라도, 타입스크립트는 타입의 형태를 통해 추론이 가능하다.
+
+```js
+function fetchItems(): string[] {
+  var items = ["a", "b", "c"];
+  return new Promis((resolve, reject) => {
+    resolve(items);
+  });
+}
+```
+
+- 함수에서 Promise를 반환하게 되면, 타입스크립트는 Promise<unknown>으로 타입을 추론하게 된다.
+- 따라서 그 Promise의 타입까지 정의해주면 된다.
+- promise 안에서 resolve된 값이 반환 타입으로 들어가 있어야 하는데, 반환 타입과 실제 resolve된 값이 맞지 않으면 오류가 뜬다.
+
+2. 클래스 선언부 타입 정의
+
+- 클래스 내부에서 사용되는 메인 변수의 타입을 정의해주면 오류가 사라진다.
+- constructor에는 클래스가 실행될 때 처음으로 실행되는 초기화 함수를 주로 넣어준다. constructor 에는 타입 정의를 따로 해주지 X
