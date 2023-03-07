@@ -69,6 +69,6 @@ interface ShoppingItem {
     stock: number;
 }
 
-function getShoppingItemOption<T>(itemOption: T):T {
+function getShoppingItemOption<T extends keyof ShoppingItem>(itemOption: T):T {
     return itemOption;
 }
