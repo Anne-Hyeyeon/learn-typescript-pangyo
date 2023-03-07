@@ -336,3 +336,133 @@ function fetchItems(): string[] {
 
 - 클래스 내부에서 사용되는 메인 변수의 타입을 정의해주면 오류가 사라진다.
 - constructor에는 클래스가 실행될 때 처음으로 실행되는 초기화 함수를 주로 넣어준다. constructor 에는 타입 정의를 따로 해주지 X
+
+# 타입 추론
+
+1. 타입 추론 : 타입스크립트가 코드를 해석해 나가는 동작.
+
+```js
+let a = 3;
+```
+
+- a에 대한 타입을 지정하지 않아도, 타입스크립트가 알아서 a의 타입을 number라고 추론함.
+
+- 변수, 속성, 인자 기본 값, 함수 반환 값을 설정할 때 타입 추론이 일어남.
+
+```js
+function getB(b = 10) {
+  var c = "hi";
+  return b;
+}
+```
+
+- 여기서 b = 10은 인자 기본 값임.
+
+2. 인터페이스와 제네릭을 이용한 타입 추론 방식
+
+- 타입스크립트는 제너릭 값까지 추론해서 타입을 정의해나간다.
+
+```js
+interface Dropdown<T> {
+  value: T;
+  title: string;
+}
+
+var shoppingItem: Dropdown<string> = {
+  value: "", // string으로 잘 추론함~!
+  title: "",
+};
+```
+
+3. 복잡한 구조에서의 타입 추론 방식
+
+- 타입이 확장되고 확장된 인터페이스에 또다시 제너릭이 있어도, 타입을 넘겨주어 사용이 가능하다.
+
+```js
+interface HyDropdown<T> {
+  value: T;
+  title: string;
+}
+
+interface HyDetailedDrop<K> extends Dropdown<K> {
+  desc: string;
+  tag: K;
+}
+
+var detailedItem: HyDetailedDrop<string> = {
+  title: "",
+  desc: "",
+  tag: "",
+  value: "",
+};
+```
+
+# 타입 단언
+
+- 타입의 값을 보장해주기
+
+```js
+var div = document.querySelector("div");
+div?.innerText;
+```
+
+- 이 경우 div가 null이 아니라는 걸 보장해 주어야 한다.
+
+- if 쓰기 or as 사용하기
+
+# 타입 가드
+
+1. 예제
+   유니언 타입 복습 : 유니언 타입을 썼을 때, 일단 타입들의 공통 속성에만 접근할 수 있음! (겹치는 거)
+
+```js
+interface SmartDeveloper {
+    name: string;
+    skill:string;
+}
+
+interface Human {
+    name:string;
+    age:number;
+}
+
+function introduce(): SmartDeveloper | Human {
+    return { name: 'Anne', age: 30, skill: 'dozing off'}
+}
+
+let anne = introduce();
+
+if ((anne as SmartDeveloper).skill) {
+    let skill = (anne as SmartDeveloper).skill;
+    console.log(skill);
+} else if ((anne as Human).age) {
+    let age= (anne as Human).age;
+    console.log(age);
+}
+
+```
+
+- 이 경우, SmartDeveloper에만 있는 skill을 사용 가능하다.
+- 타입의 범위를 줄여나갈 수 있음.
+- 하지만 이 경우 코드 가독성이 많이 떨어지기 때문에, 타입 가드를 적용하는 게 좋다.
+
+2. 타입 가드
+
+```js
+function isSmartDeveloper(target: SmartDeveloper | Human): target is SmartDeveloper {
+return (target as SmartDeveloper).skill !== undefined;
+}
+
+if (isSmartDeveloper((anne))) {
+    anne.skill
+} else {
+    anne.age
+}
+```
+
+# 타입 호환 (Type Compatibility)
+
+- 타입스크립트 코드에서 특정 타입이 다른 타입에 잘 맞는지를 의미함.
+- 오른 쪽에 있는 타입이 많은 속성을 가지거나 더 클 때 왼쪽과 호환이 된다.
+- 구조적 타이핑 : interface, class같은 타입 별칭이 아닌 내부적으로 존재하고 있는 속성과 타입끼리 비교하는 것.
+- 왼쪽에 있는 게 더 큰 거라는 사실 기억하자!
