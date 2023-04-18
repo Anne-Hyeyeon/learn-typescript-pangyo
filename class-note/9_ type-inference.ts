@@ -37,4 +37,3 @@ var detailedItem: HyDetailedDrop<string> = {
     value: ""
 }
 
-// Best Common Type

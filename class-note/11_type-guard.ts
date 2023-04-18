@@ -28,7 +28,8 @@ return (target as SmartDeveloper).skill !== undefined;
 }
 
 if (isSmartDeveloper((anne))) {
-anne.skill
+    anne.skill
 } else {
     anne.age
 }
+
